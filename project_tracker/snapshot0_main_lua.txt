@@ -1,0 +1,111 @@
+-- Initial player and animation controller
+
+if arg[2] == "debug" then
+    require("lldebugger").start()
+end
+
+function love.load()
+    Object = require "classic"
+    love.graphics.setDefaultFilter("nearest", "nearest")
+
+    idle_frames = {}
+    table.insert(idle_frames, love.graphics.newImage("assets/sprites/player_idle2.png"))
+    table.insert(idle_frames, love.graphics.newImage("assets/sprites/player_idle1.png"))
+
+    player_walk_east_frames = {}
+    table.insert(player_walk_east_frames, love.graphics.newImage("assets/sprites/player_walk_east1.png"))
+    table.insert(player_walk_east_frames, love.graphics.newImage("assets/sprites/player_walk_east2.png"))
+    table.insert(player_walk_east_frames, love.graphics.newImage("assets/sprites/player_walk_east3.png"))
+    table.insert(player_walk_east_frames, love.graphics.newImage("assets/sprites/player_walk_east4.png"))
+
+
+    player_walk_west_frames = {}
+    table.insert(player_walk_west_frames, love.graphics.newImage("assets/sprites/player_walk_west1.png"))
+    table.insert(player_walk_west_frames, love.graphics.newImage("assets/sprites/player_walk_west2.png"))
+    table.insert(player_walk_west_frames, love.graphics.newImage("assets/sprites/player_walk_west3.png"))
+    table.insert(player_walk_west_frames, love.graphics.newImage("assets/sprites/player_walk_west4.png"))
+
+
+    player_walk_north_frames = {}
+    table.insert(player_walk_north_frames, love.graphics.newImage("assets/sprites/player_walk_north1.png"))
+    table.insert(player_walk_north_frames, love.graphics.newImage("assets/sprites/player_walk_north2.png"))
+
+    player_walk_south_frames = {}
+    table.insert(player_walk_south_frames, love.graphics.newImage("assets/sprites/player_walk_south1.png"))
+    table.insert(player_walk_south_frames, love.graphics.newImage("assets/sprites/player_walk_south2.png"))
+
+    idle_frame = 1
+    player_walk_east_frame = 1
+    player_walk_west_frame = 1
+    player_walk_north_frame = 1
+    player_walk_south_frame = 1
+
+    player_position_x = 200
+    player_position_y = 300
+    state = "idle"
+    player_speed = 200
+    player_size = 5
+
+
+end
+
+function love.update(dt)
+
+    if love.keyboard.isDown("d") then
+        state = "east"
+        player_position_x = player_position_x + dt * player_speed
+        player_walk_east_frame = player_walk_east_frame + dt * 5
+        if player_walk_east_frame >= 5 then
+            player_walk_east_frame = 1
+        end
+    elseif love.keyboard.isDown("a") then
+        state = "west"
+        player_position_x = player_position_x - dt * player_speed
+        player_walk_west_frame = player_walk_west_frame + dt * 5
+        if player_walk_west_frame >= 5 then
+            player_walk_west_frame = 1
+        end
+    elseif love.keyboard.isDown("w") then
+        state = "north"
+        player_position_y = player_position_y - dt * player_speed
+        player_walk_north_frame = player_walk_north_frame + dt * 5
+        if player_walk_north_frame >= 3 then
+            player_walk_north_frame = 1
+        end
+    elseif love.keyboard.isDown("s") then
+        state = "south"
+        player_position_y = player_position_y + dt * player_speed
+        player_walk_south_frame = player_walk_south_frame + dt * 5
+        if player_walk_south_frame >= 3 then
+            player_walk_south_frame = 1
+        end
+    else
+        state = "idle"
+        idle_frame = idle_frame + dt 
+        if idle_frame >= 3 then
+            idle_frame = 1
+        end
+    end
+
+end
+
+
+
+function love.draw()
+    love.graphics.print("Idle frame "..math.floor(idle_frame), 10, 10)
+    love.graphics.print("Player walk east "..math.floor(player_walk_east_frame), 10, 30)
+    love.graphics.print("Player walk west "..math.floor(player_walk_west_frame), 10, 50)
+
+    if state == "east" then
+        love.graphics.draw(player_walk_east_frames[math.floor(player_walk_east_frame)], player_position_x, player_position_y, 0, player_size, player_size)
+    elseif state == "west" then
+        love.graphics.draw(player_walk_west_frames[math.floor(player_walk_west_frame)], player_position_x, player_position_y, 0, player_size, player_size)
+    elseif state == "idle" then
+        love.graphics.draw(idle_frames[math.floor(idle_frame)], player_position_x, player_position_y, 0, player_size, player_size)
+    elseif state == "north" then
+        love.graphics.draw(player_walk_north_frames[math.floor(player_walk_north_frame)], player_position_x, player_position_y, 0, player_size, player_size)
+    elseif state == "south" then
+        love.graphics.draw(player_walk_south_frames[math.floor(player_walk_south_frame)], player_position_x, player_position_y, 0, player_size, player_size)
+    end
+ 
+end

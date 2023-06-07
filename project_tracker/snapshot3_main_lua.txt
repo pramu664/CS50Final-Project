@@ -1,0 +1,59 @@
+-- Collisions with player and gold chunks
+if arg[2] == "debug" then
+    require("lldebugger").start()
+end
+
+
+function love.load()
+    Object = require "libraries.classic"
+    player = require "player"
+    gold = require "gold"
+
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    player = Player()
+
+    gold = {}
+    for i=1,5 do
+        table.insert(gold, Gold())
+    end
+end
+
+function checkCollision(player, target)
+    -- Get the player left, right, top and bottom  sides
+    local player_left = player.x
+    local player_left = player.x
+    local player_right = player.x + player.width
+    -- Don't detect collsion for the player's upper body 
+    local player_top = player.y + player.height / 2
+    local player_bottom = player.y + player.height
+
+    -- Get the target left, right, top and bottom sides
+    local target_left = target.x
+    local target_right = target.x + target.width
+    local target_top = target.y
+    local target_bottom = target.y + target.height
+
+    -- Collision detection
+    return player_right > target_left and  player_left < target_right and  player_bottom > target_top and  player_top < target_bottom 
+
+end
+
+function love.update(dt)
+    player:update(dt)
+
+    -- Remove gold chunks
+    for i=#gold, 1, -1 do
+       if checkCollision(player, gold[i]) then
+        table.remove(gold, i)
+       end 
+    end
+
+end
+
+function love.draw()
+    -- Instantiate gold chunks
+    for i, v in ipairs(gold)  do
+        v:draw()
+    end
+    player:draw()
+end
