@@ -6,14 +6,15 @@ end
 function love.load()
     Object = require "libraries.classic"
     player = require "player"
-    gold = require "gold"
+    apple = require "apple"
 
     love.graphics.setDefaultFilter("nearest", "nearest")
     player = Player()
 
-    gold = {}
+    -- Create five apples
+    apples = {}
     for i=1,5 do
-        table.insert(gold, Gold())
+        table.insert(apples, Apple())
     end
 
     -- TILE  SET SLICING --
@@ -77,10 +78,10 @@ end
 function love.update(dt)
     player:update(dt)
 
-    -- Remove gold chunks
-    for i=#gold, 1, -1 do
-       if checkCollision(player, gold[i]) then
-        table.remove(gold, i)
+    -- When player collecting apples remove them from the apple table
+    for i=#apples, 1, -1 do
+       if checkCollision(player, apples[i]) then
+        table.remove(apples, i)
        end 
     end
 
@@ -95,8 +96,8 @@ function love.draw()
             end
         end
     end
-    -- Draw gold chunks
-    for i, v in ipairs(gold)  do
+    -- Draw apples to the game world
+    for i, v in ipairs(apples)  do
         v:draw()
     end
     -- Draw player
