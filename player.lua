@@ -53,6 +53,9 @@ function Player:new()
 end
 
 function Player:update(dt)
+
+
+
    if love.keyboard.isDown("d") then
         self.state = "east"
         self.x = self.x + dt * self.player_speed
@@ -87,6 +90,20 @@ function Player:update(dt)
         if self.idle_frame >= 3 then
             self.idle_frame = 1
         end
+    end
+
+    -- Boundary
+    if self.x - self.width < 0 then
+        self.x = self.width
+
+    elseif self.x + self.width * 2 > love.graphics.getWidth() then
+        self.x = love.graphics.getWidth() - self.width * 2
+
+    elseif self.y < 0 then
+        self.y = 0
+
+    elseif self.y + self.height > love.graphics.getHeight() - self.width/2 then
+        self.y = love.graphics.getHeight() - self.height - self.width/2
     end
 end
 
