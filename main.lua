@@ -78,6 +78,9 @@ function love.load()
         { 1, 7, 7, 1, 3, 3, 1, 11, 11, 1, 1, 5 },
     }
 
+    -- State
+    apples_collected = 0
+
     -- EFFECTS --
     -- Screenshake
     shakeDuration = 0
@@ -113,6 +116,7 @@ function love.update(dt)
     for i = #apples, 1, -1 do
         if checkCollision(player, apples[i]) then
             table.remove(apples, i)
+            apples_collected = apples_collected + 1
             shakeDuration = 0.3
         end
     end
@@ -181,6 +185,8 @@ function love.draw()
     -- Instructions
     love.graphics.print("Restart: f1" , 10, 10)
     love.graphics.print("Exit: esc", 10, 30)
+    love.graphics.print("Goal: Collect Apples", 100, 10)
+    love.graphics.print("Score: "..apples_collected, 100, 30)
 
 end
 
