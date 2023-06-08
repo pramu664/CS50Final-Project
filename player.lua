@@ -54,8 +54,6 @@ end
 
 function Player:update(dt)
 
-
-
    if love.keyboard.isDown("d") then
         self.state = "east"
         self.x = self.x + dt * self.player_speed
