@@ -10,9 +10,9 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     player = Player()
 
-    -- Create five apples
+    -- Create apples
     apples = {}
-    for i = 1, 5 do
+    for i = 1, 1000 do
         table.insert(apples, Apple())
     end
 
@@ -77,6 +77,13 @@ function love.load()
         { 1, 7, 7, 1, 3, 3, 1, 11, 11, 1, 1, 1 },
         { 1, 7, 7, 1, 3, 3, 1, 11, 11, 1, 1, 5 },
     }
+
+    -- EFFECTS --
+    -- Screenshake
+    shakeDuration = 0
+    shakeWait = 0
+    shakeOffset = {x = 0, x = y}
+
 end
 
 function checkCollision(player, target)
@@ -106,11 +113,39 @@ function love.update(dt)
     for i = #apples, 1, -1 do
         if checkCollision(player, apples[i]) then
             table.remove(apples, i)
+            shakeDuration = 0.3
+        end
+    end
+
+    if shakeDuration > 0 then
+        shakeDuration = shakeDuration - dt
+        if shakeWait > 0 then
+            shakeWait = shakeWait - dt
+        else
+            shakeOffset.x = love.math.random(-5, 5)
+            shakeOffset.y = love.math.random(-5, 5)
+            shakeWait = 0.05
         end
     end
 end
 
+-- Close
+function love.keypressed(key)
+    if key == "escape" then
+        love.event.quit()
+    elseif key == "f1" then
+        love.event.quit("restart")
+    end
+end
+
 function love.draw()
+
+
+    -- Screenshake
+    if shakeDuration > 0 then
+        love.graphics.translate(shakeOffset.x, shakeOffset.y)
+    end
+
     -- Draw level
     for i, row in ipairs(tilemap) do
         for j, tile in ipairs(row) do
@@ -142,4 +177,10 @@ function love.draw()
     end
     -- Draw player
     player:draw()
+
+    -- Instructions
+    love.graphics.print("Restart: f1" , 10, 10)
+    love.graphics.print("Exit: esc", 10, 30)
+
 end
+
